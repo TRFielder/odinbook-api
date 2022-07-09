@@ -29,8 +29,9 @@ const userSchema = new Schema({
   about_text: {
     type: String,
   },
+  // Need to find a way to validate that URLs are URLs
   avatar_URL: {
-    type: URL,
+    type: String,
   },
   friends: [
     {
