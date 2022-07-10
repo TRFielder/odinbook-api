@@ -9,14 +9,10 @@ const userController = require('../controllers/userController');
 router.get('/', userController.userlist_get);
 
 // GET user by id
-router.get('/:id', (req, res) => {
-  res.send(`NOT IMPLEMENTED: Find user ${req.params.id}`);
-});
+router.get('/:id', userController.user_get);
 
 // GET user's posts
-router.get('/:id/posts', (req, res) => {
-  res.send(`NOT IMPLEMENTED: Get posts for user ${req.params.id}`);
-});
+router.get('/:id/posts', userController.user_posts_get);
 
 // GET user's friends
 router.get('/:id/friends', (req, res) => {

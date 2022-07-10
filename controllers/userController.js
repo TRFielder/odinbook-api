@@ -1,15 +1,61 @@
 const User = require('../models/user');
+const Post = require('../models/post');
 require('dotenv').config();
 
-exports.userlist_get = (req, res, next) => {
+// ------------- GET routes------------- //
+
+// GET all users
+exports.userlist_get = (req, res) => {
   User.find()
     .populate('friends', { firstname: 1, surname: 1, avatar_URL: 1 })
     .sort([['surname', 'descending']])
     .exec((err, allUsers) => {
       if (err) {
-        return next(err);
+        res.json(err);
       }
       // Successful, so send results
-      return res.json(allUsers);
+      res.json(allUsers);
+    });
+};
+
+// GET user by id
+exports.user_get = (req, res) => {
+  User.findById(req.params.id)
+    .populate('friends', { firstname: 1, surname: 1, avatar_URL: 1 })
+    .sort([['surname', 'descending']])
+    .exec((err, user) => {
+      if (err) {
+        res.json(err);
+      }
+      if (user) {
+        // Successful, so send the response JSON (without the user's hashed password)
+        const response = {
+          username: user.username,
+          email: user.email,
+          firstname: user.firstname,
+          surname: user.surname,
+          middle_names: user.middle_names,
+          about_text: user.about_text,
+          avatar_URL: user.avatar_URL,
+          friends: user.friends,
+        };
+
+        res.json(response);
+      }
+      // Unsuccessful, send 404
+      res.status(404).send(`User ${req.params.id} not found`);
+    });
+};
+
+// GET user's posts
+exports.user_posts_get = (req, res) => {
+  Post.find({ author: req.params.id })
+    .populate('likes')
+    .sort([['date', 'descending']])
+    .exec((err, allPosts) => {
+      if (err) {
+        res.json(err);
+      } // Successful, so send the response JSON (Sends empty array if no posts)
+      res.json(allPosts);
     });
 };
