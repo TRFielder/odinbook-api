@@ -22,7 +22,7 @@ exports.userlist_get = (req, res) => {
 
 // GET user by id
 exports.user_get = (req, res) => {
-  User.findById(req.params.id)
+  User.findById(req.params.id, { password: 0 })
     .populate('friends', { firstname: 1, surname: 1, avatar_URL: 1 })
     .sort([['surname', 'descending']])
     .exec((err, user) => {
@@ -31,18 +31,8 @@ exports.user_get = (req, res) => {
       }
       if (user) {
         // Successful, so send the response JSON (without the user's hashed password)
-        const response = {
-          username: user.username,
-          email: user.email,
-          firstname: user.firstname,
-          surname: user.surname,
-          middle_names: user.middle_names,
-          about_text: user.about_text,
-          avatar_URL: user.avatar_URL,
-          friends: user.friends,
-        };
 
-        res.json(response);
+        res.json(user);
       } else {
         // Unsuccessful, send 404
         res.status(404).send(`User ${req.params.id} not found`);
