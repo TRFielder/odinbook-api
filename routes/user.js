@@ -15,16 +15,12 @@ router.get('/:id', userController.user_get);
 router.get('/:id/posts', userController.user_posts_get);
 
 // GET user's friends
-router.get('/:id/friends', (req, res) => {
-  res.send(`NOT IMPLEMENTED: Get friends for user ${req.params.id}`);
-});
+router.get('/:id/friends', userController.user_friends_get);
 
 // ------------- POST routes------------- //
 
 // POST new user
-router.post('/', (req, res) => {
-  res.send('NOT IMPLEMENTED: Create new user');
-});
+router.post('/', userController.user_create);
 
 // ------------- PUT routes------------- //
 
