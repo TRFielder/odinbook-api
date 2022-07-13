@@ -91,9 +91,9 @@ exports.user_create = [
       return res.json({ errors: errors.array() });
     }
     // Data is valid, create the new user and save to database
-    bcrypt.hash(req.body.password, 10, (err, hashedPassword) => {
-      if (err) {
-        return next(err);
+    bcrypt.hash(req.body.password, 10, (hashErr, hashedPassword) => {
+      if (hashErr) {
+        return next(hashErr);
       }
 
       const user = new User({
@@ -106,12 +106,24 @@ exports.user_create = [
         about_text: req.body.about_text,
         avatar_URL: req.body.avatar_URL,
       });
-      user.save(() => {
-        if (err) return next(err);
-        return true;
-      });
-      // Send response payload containing the created user
-      return res.json(user);
+
+      User.findOne({ username: req.body.username }).exec(
+        (findErr, foundUser) => {
+          if (findErr) {
+            return next(findErr);
+          }
+          if (foundUser) {
+            return res.send('User with this username already exists');
+          }
+          user.save((saveErr) => {
+            if (saveErr) return next(saveErr);
+            // Send response payload containing the created user
+            return res.json(user);
+          });
+          return true;
+        },
+      );
+      return true;
     });
     return true;
   },
