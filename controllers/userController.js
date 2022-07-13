@@ -9,7 +9,12 @@ require('dotenv').config();
 // GET all users
 exports.userlist_get = (req, res) => {
   User.find({}, { password: 0 })
-    .populate('friends', { firstname: 1, surname: 1, avatar_URL: 1 })
+    .populate('friends', {
+      _id: 1,
+      firstname: 1,
+      surname: 1,
+      avatar_URL: 1,
+    })
     .sort([['surname', 'descending']])
     .exec((err, allUsers) => {
       if (err) {
@@ -23,7 +28,12 @@ exports.userlist_get = (req, res) => {
 // GET user by id
 exports.user_get = (req, res) => {
   User.findById(req.params.id, { password: 0 })
-    .populate('friends', { firstname: 1, surname: 1, avatar_URL: 1 })
+    .populate('friends', {
+      _id: 1,
+      firstname: 1,
+      surname: 1,
+      avatar_URL: 1,
+    })
     .sort([['surname', 'descending']])
     .exec((err, user) => {
       if (err) {
@@ -166,18 +176,32 @@ exports.update_details = [
 ];
 
 // PUT Add friend
-exports.add_friends = (req, res, next) => {
+exports.add_friends = (req, res) => {
   User.findByIdAndUpdate(
     req.params.id,
     {
       $push: { friends: req.params.friend },
     },
-    (err) => {
-      if (err) {
-        return next(err);
+    {},
+    (pushError) => {
+      if (pushError) {
+        res.send(`Error: ${pushError}`);
       }
-      return res.send(
-        `Added user ${req.params.friend} as a friend of user ${req.params.id}`,
+      // Add to the other user's friend list
+      User.findByIdAndUpdate(
+        req.params.friend,
+        {
+          $push: { friends: req.params.id },
+        },
+        {},
+        (secondPushError) => {
+          if (secondPushError) {
+            res.send(`Error: ${secondPushError}`);
+          }
+          res.send(
+            `Added user ${req.params.friend} as a friend of user ${req.params.id}`,
+          );
+        },
       );
     },
   );
