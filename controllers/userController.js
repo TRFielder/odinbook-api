@@ -116,3 +116,77 @@ exports.user_create = [
     return true;
   },
 ];
+
+// ------------- PUT routes------------- //
+
+// PUT update user details
+exports.update_details = [
+  body('firstname').trim().isLength({ min: 1 }),
+  body('surname').trim().isLength({ min: 1 }),
+  body('email').trim().isEmail().isLength({ min: 1 }),
+
+  (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.json({ errors: errors.array() });
+    }
+    // Data is valid, create an updated user object and save to database
+    User.findByIdAndUpdate(
+      req.params.id,
+      {
+        email: req.body.email,
+        firstname: req.body.firstname,
+        surname: req.body.surname,
+        middle_names: req.body.middle_names,
+        about_text: req.body.about_text,
+        avatar_URL: req.body.avatar_URL,
+      },
+      (err) => {
+        if (err) {
+          return next(err);
+        }
+        return res.send(`Updated user with ID: ${req.params.id}`);
+      },
+    );
+    return true;
+  },
+];
+
+// PUT Add friend
+exports.add_friends = (req, res, next) => {
+  User.findByIdAndUpdate(
+    req.params.id,
+    {
+      $push: { friends: req.params.friend },
+    },
+    (err) => {
+      if (err) {
+        return next(err);
+      }
+      return res.send(
+        `Added user ${req.params.friend} as a friend of user ${req.params.id}`,
+      );
+    },
+  );
+};
+
+// ------------- DELETE routes------------- //
+
+// DELETE remove user friends
+exports.remove_friends = (req, res, next) => {
+  User.findByIdAndUpdate(
+    req.params.id,
+    {
+      $pull: { friends: req.params.friend },
+    },
+    (err) => {
+      if (err) {
+        return next(err);
+      }
+      return res.send(
+        `Removed user ${req.params.friend} as a friend of user ${req.params.id}`,
+      );
+    },
+  );
+};

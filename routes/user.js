@@ -25,13 +25,14 @@ router.post('/', userController.user_create);
 // ------------- PUT routes------------- //
 
 // PUT update user details
-router.put('/:id', (req, res) => {
-  res.send(`NOT IMPLEMENTED: Update user ${req.params.id}`);
-});
+router.put('/:id', userController.update_details);
 
-// PUT update user friends
-router.put('/:id/friends', (req, res) => {
-  res.send(`NOT IMPLEMENTED: Update friends for user ${req.params.id}`);
-});
+// PUT Add friend
+router.put('/:id/friends/:friend', userController.add_friends);
+
+// ------------- DELETE routes------------- //
+
+// DELETE remove user friends
+router.put('/:id/friends/:friend', userController.remove_friends);
 
 module.exports = router;
