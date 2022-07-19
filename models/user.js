@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const findOrCreate = require('mongoose-find-or-create');
 
 const { Schema } = mongoose;
 
@@ -40,5 +41,8 @@ const userSchema = new Schema({
     },
   ],
 });
+
+// Enable find or create
+userSchema.plugin(findOrCreate);
 
 module.exports = mongoose.model('User', userSchema);

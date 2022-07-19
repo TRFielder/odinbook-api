@@ -4,6 +4,8 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
+const passport = require('passport');
+require('./modules/auth');
 require('dotenv').config();
 
 // Connect to MongoDB
@@ -14,6 +16,10 @@ const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/user');
 
 const app = express();
+
+// Passport middleware
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Various middleware
 app.use(cors());
