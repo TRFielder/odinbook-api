@@ -33,6 +33,6 @@ router.put('/:id/friends/:friend', userController.add_friends);
 // ------------- DELETE routes------------- //
 
 // DELETE remove user friends
-router.put('/:id/friends/:friend', userController.remove_friends);
+router.delete('/:id/friends/:friend', userController.remove_friends);
 
 module.exports = router;

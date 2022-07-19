@@ -210,18 +210,32 @@ exports.add_friends = (req, res) => {
 // ------------- DELETE routes------------- //
 
 // DELETE remove user friends
-exports.remove_friends = (req, res, next) => {
+exports.remove_friends = (req, res) => {
   User.findByIdAndUpdate(
     req.params.id,
     {
       $pull: { friends: req.params.friend },
     },
-    (err) => {
-      if (err) {
-        return next(err);
+    {},
+    (pullError) => {
+      if (pullError) {
+        res.send(`Error: ${pullError}`);
       }
-      return res.send(
-        `Removed user ${req.params.friend} as a friend of user ${req.params.id}`,
+      // Add to the other user's friend list
+      User.findByIdAndUpdate(
+        req.params.friend,
+        {
+          $pull: { friends: req.params.id },
+        },
+        {},
+        (secondPullError) => {
+          if (secondPullError) {
+            res.send(`Error: ${secondPullError}`);
+          }
+          res.send(
+            `Removed user ${req.params.friend} from friend list of user ${req.params.id}`,
+          );
+        },
       );
     },
   );
