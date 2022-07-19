@@ -1,28 +1,29 @@
 const passport = require('passport');
-const FacebookStrategy = require('passport-facebook').Strategy;
+const GoogleStrategy = require('passport-google-oauth2').Strategy;
 const User = require('../models/user');
 
 // PassportJS strategy setup
 
 passport.use(
-  new FacebookStrategy(
+  new GoogleStrategy(
     {
-      clientID: process.env.FACEBOOK_API_KEY,
-      clientSecret: process.env.FACEBOOK_API_SECRET,
-      callbackURL: process.env.LOGIN_URL,
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: 'http://localhost:3000/google/callback',
+      passReqToCallback: true,
     },
-    (accessToken, refreshToken, profile, done) => {
+    (request, accessToken, refreshToken, profile, done) => {
       User.findOrCreate(
         { username: profile.id },
         {
-          email: profile.emails[0].value,
           firstname: profile.name.givenName,
-          surname: profile.name.familyName,
           middle_names: profile.name.middleName,
+          surname: profile.name.familyName,
+          email: profile.emails[0].value,
           avatar_URL: profile.photos[0].value,
         },
-        (err, user) => done(err, user),
       );
+      return done(null, profile);
     },
   ),
 );

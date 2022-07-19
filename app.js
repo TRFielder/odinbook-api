@@ -5,8 +5,9 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
 const passport = require('passport');
-require('./modules/auth');
+
 require('dotenv').config();
+require('./modules/auth');
 
 // Connect to MongoDB
 require('./config/services/mongoDB');
@@ -30,6 +31,19 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Define routes
+// Passport auth using google
+app.get(
+  '/auth/google',
+  passport.authenticate('google', { scope: ['email', 'profile'] }),
+);
+
+app.get(
+  '/auth/google/callback',
+  passport.authenticate('google', {
+    successRedirect: '/auth/google/success',
+    failureRedirect: '/auth/google/failure',
+  }),
+);
 app.use('/api', indexRouter);
 app.use('/api/user', usersRouter);
 
