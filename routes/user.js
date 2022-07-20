@@ -1,9 +1,22 @@
 const express = require('express');
+const passport = require('passport');
 
 const router = express.Router();
 const userController = require('../controllers/userController');
 
 // ------------- GET routes------------- //
+
+// Passport auth using facebook
+router.get('/auth/facebook', passport.authenticate('facebook'));
+
+router.get(
+  '/auth/facebook/callback',
+  passport.authenticate('facebook', { failureRedirect: '/' }),
+  (req, res) => {
+    // Successful authentication, redirect home
+    res.send('Success!');
+  },
+);
 
 // GET all users
 router.get('/', userController.userlist_get);

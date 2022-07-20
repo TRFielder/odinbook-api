@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
 const passport = require('passport');
+const session = require('express-session');
 
 require('dotenv').config();
 require('./modules/auth');
@@ -18,11 +19,8 @@ const usersRouter = require('./routes/user');
 
 const app = express();
 
-// Passport middleware
-app.use(passport.initialize());
-app.use(passport.session());
-
 // Various middleware
+
 app.use(cors());
 app.use(logger('dev'));
 app.use(express.json());
@@ -30,20 +28,17 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Define routes
-// Passport auth using google
-app.get(
-  '/auth/google',
-  passport.authenticate('google', { scope: ['email', 'profile'] }),
-);
-
-app.get(
-  '/auth/google/callback',
-  passport.authenticate('google', {
-    successRedirect: '/auth/google/success',
-    failureRedirect: '/auth/google/failure',
+// Passport middleware
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
   }),
 );
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Define routes
+
 app.use('/api', indexRouter);
 app.use('/api/user', usersRouter);
 
@@ -61,7 +56,7 @@ app.use((err, req, res, next) => {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.send(`${err}`);
 });
 
 module.exports = app;
