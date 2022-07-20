@@ -79,9 +79,10 @@ exports.user_friends_get = (req, res) => {
       if (user) {
         // Successful, so send the response JSON
         res.json(user.friends);
+      } else {
+        // Unsuccessful, send 404
+        res.status(404).send(`User ${req.params.id} not found`);
       }
-      // Unsuccessful, send 404
-      res.status(404).send(`User ${req.params.id} not found`);
     });
 };
 

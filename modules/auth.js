@@ -9,7 +9,7 @@ passport.use(
     {
       clientID: process.env.FACEBOOK_CLIENT_ID,
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-      callbackURL: 'localhost:3000/auth/facebook/callback',
+      callbackURL: 'https://localhost:3000/api/user/auth/facebook/callback',
     },
     (accessToken, refreshToken, profile, done) => {
       User.findOrCreate(
