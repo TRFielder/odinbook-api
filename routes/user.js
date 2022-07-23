@@ -13,8 +13,8 @@ router.get(
   '/auth/facebook/callback',
   passport.authenticate('facebook', { failureRedirect: '/' }),
   (req, res) => {
+    res.send('Welcome to the callback URI');
     // Successful authentication, redirect home
-    res.send('Success!');
   },
 );
 

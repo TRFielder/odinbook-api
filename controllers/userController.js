@@ -1,5 +1,4 @@
 const { body, validationResult } = require('express-validator');
-const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 const Post = require('../models/post');
 require('dotenv').config();
@@ -102,38 +101,28 @@ exports.user_create = [
       return res.json({ errors: errors.array() });
     }
     // Data is valid, create the new user and save to database
-    bcrypt.hash(req.body.password, 10, (hashErr, hashedPassword) => {
-      if (hashErr) {
-        return next(hashErr);
+    const user = new User({
+      username: req.body.username,
+      email: req.body.email,
+      firstname: req.body.firstname,
+      surname: req.body.surname,
+      middle_names: req.body.middle_names,
+      about_text: req.body.about_text,
+      avatar_URL: req.body.avatar_URL,
+    });
+
+    User.findOne({ username: req.body.username }).exec((findErr, foundUser) => {
+      if (findErr) {
+        return next(findErr);
       }
-
-      const user = new User({
-        username: req.body.username,
-        password: hashedPassword,
-        email: req.body.email,
-        firstname: req.body.firstname,
-        surname: req.body.surname,
-        middle_names: req.body.middle_names,
-        about_text: req.body.about_text,
-        avatar_URL: req.body.avatar_URL,
+      if (foundUser) {
+        return res.send('User with this username already exists');
+      }
+      user.save((saveErr) => {
+        if (saveErr) return next(saveErr);
+        // Send response payload containing the created user
+        return res.json(user);
       });
-
-      User.findOne({ username: req.body.username }).exec(
-        (findErr, foundUser) => {
-          if (findErr) {
-            return next(findErr);
-          }
-          if (foundUser) {
-            return res.send('User with this username already exists');
-          }
-          user.save((saveErr) => {
-            if (saveErr) return next(saveErr);
-            // Send response payload containing the created user
-            return res.json(user);
-          });
-          return true;
-        },
-      );
       return true;
     });
     return true;

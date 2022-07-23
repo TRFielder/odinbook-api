@@ -10,21 +10,19 @@ passport.use(
       clientID: process.env.FACEBOOK_CLIENT_ID,
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
       callbackURL: 'https://localhost:3000/api/user/auth/facebook/callback',
+      profileFields: ['id', 'name', 'emails', 'photos'],
     },
     (accessToken, refreshToken, profile, done) => {
-      User.findOrCreate(
-        { username: profile.id },
-        {
-          firstname: profile.name.givenName,
-          middle_names: profile.name.middleName,
-          surname: profile.name.familyName,
-          email: profile.emails[0].value,
-          avatar_URL: profile.photos[0].value,
-        },
-        {},
-        // The user has been found or created, return the user object
-        (err, user) => done(err, user),
-      );
+      if (profile.emails === undefined) {
+        console.log('No email found');
+      }
+      console.log({
+        username: profile.id,
+        firstname: profile.name.givenName,
+        middlename: profile.name.middleName,
+        surname: profile.name.familyName,
+        avatar_URL: profile.photos[0].value,
+      });
     },
   ),
 );
