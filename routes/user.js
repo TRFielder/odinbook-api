@@ -23,7 +23,14 @@ router.get(
   '/auth/facebook/callback',
   passport.authenticate('facebook', { failureRedirect: '/' }),
   (req, res) => {
-    res.send(`login success, ${req.user.firstname}`);
+    res.json({
+      message: 'Facebook Authentication success',
+      user: {
+        firstname: req.user.firstname,
+        surname: req.user.surname,
+        id: req.user.id,
+      },
+    });
     // Successful authentication, redirect home
   },
 );

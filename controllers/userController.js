@@ -26,7 +26,7 @@ exports.userlist_get = (req, res) => {
 
 // GET user by id
 exports.user_get = (req, res) => {
-  User.findById(req.params.id, { password: 0 })
+  User.findById(req.params.id)
     .populate('friends', {
       _id: 1,
       firstname: 1,
@@ -36,15 +36,13 @@ exports.user_get = (req, res) => {
     .sort([['surname', 'descending']])
     .exec((err, user) => {
       if (err) {
-        res.json(err);
-      }
-      if (user) {
+        res.status(400).send(err.message);
+      } else if (user) {
         // Successful, so send the response JSON (without the user's hashed password)
-
         res.json(user);
       } else {
         // Unsuccessful, send 404
-        res.status(404).send(`User ${req.params.id} not found`);
+        res.status(404).json({ message: `User ${req.params.id} not found` });
       }
     });
 };
