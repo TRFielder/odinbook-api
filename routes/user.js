@@ -18,6 +18,14 @@ router.get(
   },
 );
 
+// GET Logout current user with passport
+router.get('/auth/logout', (req, res) => {
+  req.logout((err) => {
+    if (err) res.send(err);
+    res.send('You have been logged out');
+  });
+});
+
 // GET all users
 router.get('/', userController.userlist_get);
 
