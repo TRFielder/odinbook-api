@@ -13,16 +13,35 @@ passport.use(
       profileFields: ['id', 'name', 'emails', 'photos'],
     },
     (accessToken, refreshToken, profile, done) => {
+      // My own facebook profile doesn't come with an email associated. This is a solution
       if (profile.emails === undefined) {
-        console.log('No email found');
+        User.findOrCreate(
+          { username: profile.id },
+          {
+            firstname: profile.name.givenName,
+            surname: profile.name.familyName,
+            avatar_URL: profile.photos[0].value,
+          },
+          (err, user) => {
+            console.log(`Logged in as user: ${user}`);
+            done(null, user);
+          },
+        );
+      } else {
+        User.findOrCreate(
+          { username: profile.id },
+          {
+            email: profile.emails[0].value,
+            firstname: profile.name.givenName,
+            surname: profile.name.familyName,
+            avatar_URL: profile.photos[0].value,
+          },
+          (err, user) => {
+            console.log(`Logged in as user: ${user}`);
+            done(null, user);
+          },
+        );
       }
-      console.log({
-        username: profile.id,
-        firstname: profile.name.givenName,
-        middlename: profile.name.middleName,
-        surname: profile.name.familyName,
-        avatar_URL: profile.photos[0].value,
-      });
     },
   ),
 );

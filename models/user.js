@@ -20,9 +20,6 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-  middle_names: {
-    type: String,
-  },
   about_text: {
     type: String,
   },
