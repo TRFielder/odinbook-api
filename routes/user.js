@@ -4,6 +4,16 @@ const passport = require('passport');
 const router = express.Router();
 const userController = require('../controllers/userController');
 
+// Custom middleware to check auth status
+router.use((req, res, next) => {
+  // Without this, user is prevented from logging in
+  if (req.path.includes('/auth/')) {
+    return next();
+  }
+  if (!req.user) return res.sendStatus(401);
+  return next();
+});
+
 // ------------- GET routes------------- //
 
 // Passport auth using facebook
@@ -13,7 +23,7 @@ router.get(
   '/auth/facebook/callback',
   passport.authenticate('facebook', { failureRedirect: '/' }),
   (req, res) => {
-    res.send(`Welcome to the callback URI, ${req.user.firstname}`);
+    res.send(`login success, ${req.user.firstname}`);
     // Successful authentication, redirect home
   },
 );

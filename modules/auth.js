@@ -23,7 +23,6 @@ passport.use(
             avatar_URL: profile.photos[0].value,
           },
           (err, user) => {
-            console.log(`Logged in as user: ${user}`);
             done(null, user);
           },
         );
@@ -37,7 +36,6 @@ passport.use(
             avatar_URL: profile.photos[0].value,
           },
           (err, user) => {
-            console.log(`Logged in as user: ${user}`);
             done(null, user);
           },
         );
