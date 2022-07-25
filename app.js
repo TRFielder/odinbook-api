@@ -40,6 +40,16 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+// Custom middleware to check auth status
+app.use((req, res, next) => {
+  // Without this, user is prevented from logging in
+  if (req.path.includes('/auth/')) {
+    return next();
+  }
+  if (!req.user) return res.sendStatus(401);
+  return next();
+});
+
 // Define routes
 
 app.use('/api', indexRouter);
