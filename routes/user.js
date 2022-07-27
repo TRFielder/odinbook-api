@@ -11,8 +11,9 @@ router.get('/auth/facebook', passport.authenticate('facebook'));
 
 router.get(
   '/auth/facebook/callback',
-  passport.authenticate('facebook', { failureRedirect: '/' }),
+  passport.authenticate('facebook', { successRedirect: process.env.CLIENT_HOME_URL, failureRedirect: '/' }),
   (req, res) => {
+    console.log(req.user.firstname);
     res.json({
       message: 'Facebook Authentication success',
       user: {
@@ -35,6 +36,9 @@ router.get('/auth/logout', (req, res) => {
 
 // GET all users
 router.get('/', userController.userlist_get);
+
+// GET current user
+router.get('/current', userController.currentuser_get);
 
 // GET user by id
 router.get('/:id', userController.user_get);

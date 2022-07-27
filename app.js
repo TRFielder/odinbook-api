@@ -5,7 +5,9 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
 const passport = require('passport');
-const session = require('express-session');
+//const session = require('express-session');
+const cookieSession = require('cookie-session');
+const User = require('./models/user');
 
 require('dotenv').config();
 require('./modules/auth');
@@ -22,7 +24,13 @@ const app = express();
 
 // Various middleware
 
-app.use(cors());
+app.use(
+  cors({
+    origin: 'http://localhost:3001', // allow server to accept request from a different origin
+    methods: 'GET,POST,PUT,DELETE',
+    credentials: true, // allow session cookie from browser to pass through
+  }),
+);
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -30,15 +38,24 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Passport middleware
+
 app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    saveUninitialized: true,
-    resave: true,
+  cookieSession({
+    name: 'session',
+    keys: [process.env.SESSION_SECRET],
+    maxAge: 24 * 60 * 60,
   }),
 );
 app.use(passport.initialize());
 app.use(passport.session());
+
+passport.serializeUser((user, done) => done(null, user.id));
+
+passport.deserializeUser((id, done) => {
+  User.findById(id, (err, user) => {
+    done(err, user);
+  });
+});
 
 // Custom middleware to check auth status
 app.use((req, res, next) => {

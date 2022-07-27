@@ -5,6 +5,11 @@ require('dotenv').config();
 
 // ------------- GET routes------------- //
 
+// GET current user (requires auth)
+exports.currentuser_get = (req, res) => {
+  res.json(req.user);
+};
+
 // GET all users
 exports.userlist_get = (req, res) => {
   User.find({}, { password: 0 })
@@ -186,9 +191,7 @@ exports.add_friends = (req, res) => {
           if (secondPushError) {
             res.send(`Error: ${secondPushError}`);
           }
-          res.send(
-            `Added user ${req.params.friend} as a friend of user ${req.params.id}`,
-          );
+          res.send(`Added user ${req.params.friend} as a friend of user ${req.params.id}`);
         },
       );
     },
@@ -220,9 +223,7 @@ exports.remove_friends = (req, res) => {
           if (secondPullError) {
             res.send(`Error: ${secondPullError}`);
           }
-          res.send(
-            `Removed user ${req.params.friend} from friend list of user ${req.params.id}`,
-          );
+          res.send(`Removed user ${req.params.friend} from friend list of user ${req.params.id}`);
         },
       );
     },
