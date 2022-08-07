@@ -4,6 +4,9 @@ const User = require('../models/user');
 
 // PassportJS strategy setup
 
+// warm-beyond-87416.herokuapp.com
+// localhost:3000
+
 passport.use(
   new FacebookStrategy(
     {

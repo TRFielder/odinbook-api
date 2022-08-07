@@ -36,7 +36,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.enable('trust proxy');
+app.set('trust proxy', 1);
 
 // Passport middleware
 
@@ -45,6 +45,7 @@ app.use(
     name: 'session',
     keys: [process.env.SESSION_SECRET],
     maxAge: 24 * 60 * 60,
+    sameSite: 'none',
   }),
 );
 app.use(passport.initialize());

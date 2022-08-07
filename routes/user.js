@@ -9,6 +9,9 @@ const userController = require('../controllers/userController');
 // Passport auth using facebook
 router.get('/auth/facebook', passport.authenticate('facebook'));
 
+// warm-beyond-87416.herokuapp.com
+// localhost:3000
+
 router.get(
   '/auth/facebook/callback',
   passport.authenticate('facebook', { successRedirect: 'http://localhost:3001/#/profile', failureRedirect: '/' }),
