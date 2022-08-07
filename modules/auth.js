@@ -13,6 +13,7 @@ passport.use(
       profileFields: ['id', 'name', 'emails', 'picture.type(large)'],
     },
     (accessToken, refreshToken, profile, done) => {
+      console.log('Authorising');
       // My own facebook profile doesn't come with an email associated. This is a solution
       if (profile.emails === undefined) {
         User.findOrCreate(
