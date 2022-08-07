@@ -10,7 +10,7 @@ passport.use(
       clientID: process.env.FACEBOOK_CLIENT_ID,
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
       callbackURL: 'https://warm-beyond-87416.herokuapp.com/api/user/auth/facebook/callback',
-      profileFields: ['id', 'name', 'emails', 'photos'],
+      profileFields: ['id', 'name', 'emails', 'picture.type(large)'],
     },
     (accessToken, refreshToken, profile, done) => {
       // My own facebook profile doesn't come with an email associated. This is a solution
