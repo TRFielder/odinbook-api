@@ -14,7 +14,7 @@ router.get('/auth/facebook', passport.authenticate('facebook'));
 
 router.get(
   '/auth/facebook/callback',
-  passport.authenticate('facebook', { successRedirect: 'http://localhost:3001/#/profile', failureRedirect: '/' }),
+  passport.authenticate('facebook', { successRedirect: 'http://localhost:3001/#/postlogin', failureRedirect: '/' }),
   (req, res) => {
     console.log('Test message');
     console.log(req.user.firstname);
