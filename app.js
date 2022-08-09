@@ -26,7 +26,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: 'http://localhost:3001', // allow server to accept request from a different origin
+    origin: process.env.FRONTEND_URI, // allow server to accept request from a different origin
     methods: 'GET,POST,PUT,DELETE',
     credentials: true, // allow session cookie from browser to pass through
   }),
