@@ -1,14 +1,17 @@
 const express = require('express');
 
 const router = express.Router();
+const postController = require('../controllers/postController');
 
 // ------------- GET routes------------- //
 
 // GET all posts
-router.get('/', (req, res) => res.send('NOT IMPLEMENTED: GET all posts'));
+router.get('/', postController.postlist_get);
 
 // GET post by id
-router.get('/:id', (req, res) => res.send('NOT IMPLEMENTED: GET post by ID'));
+router.get('/:id', postController.post_get);
+
+// GET current user
 
 // ------------- POST routes------------- //
 
@@ -21,7 +24,7 @@ router.post('/:id', (req, res) => res.send('NOT IMPLEMENTED: POST new comment'))
 // ------------- PUT routes------------- //
 
 // PUT update post by ID
-router.put('/:id', (req, res) => res.send('NOT IMPLEMENTED: PUT update post by ID'));
+router.put('/:id', (req, res) => res.send(req.user));
 
 // PUT update comment by ID
 router.put('/:id/:comment', (req, res) => res.send('NOT IMPLEMENTED: PUT update comment by ID'));
