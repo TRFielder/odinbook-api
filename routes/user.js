@@ -1,5 +1,6 @@
 const express = require('express');
 const passport = require('passport');
+require('dotenv').config();
 
 const router = express.Router();
 const userController = require('../controllers/userController');
@@ -14,9 +15,8 @@ router.get('/auth/facebook', passport.authenticate('facebook'));
 
 router.get(
   '/auth/facebook/callback',
-  passport.authenticate('facebook', { successRedirect: 'http://localhost:3001/#/postlogin', failureRedirect: '/' }),
+  passport.authenticate('facebook', { successRedirect: `${process.env.FRONTEND_URI}/#/postlogin`, failureRedirect: '/' }),
   (req, res) => {
-    console.log('Test message');
     console.log(req.user.firstname);
     res.json({
       message: 'Facebook Authentication success',

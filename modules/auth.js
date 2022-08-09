@@ -1,6 +1,7 @@
 const passport = require('passport');
 const FacebookStrategy = require('passport-facebook').Strategy;
 const User = require('../models/user');
+require('dotenv').config();
 
 // PassportJS strategy setup
 
@@ -9,7 +10,7 @@ passport.use(
     {
       clientID: process.env.FACEBOOK_CLIENT_ID,
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-      callbackURL: 'https://warm-beyond-87416.herokuapp.com/api/user/auth/facebook/callback',
+      callbackURL: `${process.env.BACKEND_URI}/api/user/auth/facebook/callback`,
       profileFields: ['id', 'name', 'emails', 'picture.type(large)'],
     },
     (accessToken, refreshToken, profile, done) => {
