@@ -71,7 +71,41 @@ exports.post_create = [
     post.save((saveErr) => {
       if (saveErr) return next(saveErr);
       // Send response payload containing the created user
-      return res.json(user);
+      return res.json(post);
     });
+  },
+];
+
+// ------------- PATCH routes------------- //
+
+// PATCH comment on post by ID
+exports.patch_comment = [
+  body('text').trim().isLength({ min: 1 }),
+
+  (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.json({ errors: errors.array() });
+    }
+    const comment = new Comment({
+      author: req.user._id,
+      owningPost: req.params.id,
+      text: req.body.text,
+    });
+    // Comment is valid, add it to the comments array and save it to the database
+    Post.findByIdAndUpdate(
+      req.params.id,
+      {
+        $push: { comments: comment },
+      },
+      {},
+      (pushError) => {
+        if (pushError) {
+          res.send(`Error: ${pushError}`);
+        }
+        res.json(comment);
+      },
+    );
   },
 ];

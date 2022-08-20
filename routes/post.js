@@ -18,8 +18,10 @@ router.get('/:id', postController.post_get);
 // POST new post
 router.post('/', (req, res) => res.send('NOT IMPLEMENTED: POST new post'));
 
-// POST comment on post by ID
-router.post('/:id', (req, res) => res.send('NOT IMPLEMENTED: POST new comment'));
+// ------------- PATCH routes------------- //
+
+// PATCH comment on post by ID
+router.patch('/:id', (req, res) => res.send('NOT IMPLEMENTED: PATCH new comment'));
 
 // ------------- PUT routes------------- //
 
