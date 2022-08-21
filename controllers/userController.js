@@ -56,6 +56,7 @@ exports.user_get = (req, res) => {
 exports.user_posts_get = (req, res) => {
   Post.find({ author: req.params.id })
     .populate('likes')
+    .populate('author')
     .sort([['date', 'descending']])
     .exec((err, allPosts) => {
       if (err) {

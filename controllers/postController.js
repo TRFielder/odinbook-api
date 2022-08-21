@@ -1,5 +1,4 @@
 const { body, validationResult } = require('express-validator');
-const User = require('../models/user');
 const Post = require('../models/post');
 require('dotenv').config();
 
@@ -65,7 +64,7 @@ exports.post_create = [
     }
     // Data is valid, create the new user and save to database
     const post = new Post({
-      author: req.user._id,
+      author: req.user.id,
       text: req.body.text,
     });
     post.save((saveErr) => {
@@ -73,6 +72,7 @@ exports.post_create = [
       // Send response payload containing the created user
       return res.json(post);
     });
+    return true;
   },
 ];
 
@@ -82,14 +82,14 @@ exports.post_create = [
 exports.patch_comment = [
   body('text').trim().isLength({ min: 1 }),
 
-  (req, res, next) => {
+  (req, res) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
       return res.json({ errors: errors.array() });
     }
     const comment = new Comment({
-      author: req.user._id,
+      author: req.user.id,
       owningPost: req.params.id,
       text: req.body.text,
     });
@@ -107,5 +107,6 @@ exports.patch_comment = [
         res.json(comment);
       },
     );
+    return true;
   },
 ];

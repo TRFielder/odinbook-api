@@ -17,7 +17,6 @@ router.get(
   '/auth/facebook/callback',
   passport.authenticate('facebook', { successRedirect: `${process.env.FRONTEND_URI}/#/postlogin`, failureRedirect: '/' }),
   (req, res) => {
-    console.log(req.user.firstname);
     res.json({
       message: 'Facebook Authentication success',
       user: {
