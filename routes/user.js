@@ -10,7 +10,7 @@ const userController = require('../controllers/userController');
 // Passport auth using facebook
 router.get('/auth/facebook', passport.authenticate('facebook'));
 
-// warm-beyond-87416.herokuapp.com
+// https://odinbook-api-liiz.onrender.com
 // localhost:3000
 
 router.get(
